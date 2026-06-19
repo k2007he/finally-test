@@ -1,54 +1,73 @@
 import pytest
-from today_checklist import TodoItem, DailySchedule, Checklist
+from datetime import datetime, timedelta
+from today_checklist.core import TodoItem
 
-# 1. 부모 클래스 기본 생성 테스트
-def test_todo_item_creation():
-    item = TodoItem("기본 할 일")
-    assert item.title == "기본 할 일"
-    assert item.is_completed is False
+# ==========================================
+# 1. 정상 케이스
+# ==========================================
 
-# 2. 부모 클래스 빈 값 입력시 예외 처리 테스트
-def test_todo_item_empty_title():
+def test_todo_creation_success():
+    """정상 케이스 1: 할 일 객체가 올바르게 생성되는지 확인"""
+    todo = TodoItem("파이썬 과제하기")
+    assert todo.title == "파이썬 과제하기"
+    assert todo.is_completed is False
+
+
+def test_todo_initial_status():
+    """정상 케이스 2: 처음 생성된 할 일의 완료 상태는 항상 False인지 확인"""
+    todo = TodoItem("방 청소")
+    assert todo.is_completed is False
+
+
+def test_mark_as_completed():
+    """정상 케이스 3: mark_as_completed 호출 시 완료 상태가 True로 변하는지 확인"""
+    todo = TodoItem("운동하기")
+    todo.mark_as_completed()
+    assert todo.is_completed is True
+
+
+def test_get_summary():
+    """정상 케이스 4: get_summary가 할 일의 제목을 정확히 반환하는지 확인"""
+    todo = TodoItem("블로그 글 쓰기")
+    assert todo.get_summary() == "블로그 글 쓰기"
+
+
+def test_auto_complete_when_time_passed():
+    """정상 케이스 5: 마감 시간이 지나면 자동으로 is_completed가 True가 되는지 확인"""
+    # 현재 시간보다 1시간 전으로 마감 시간 설정
+    past_time = datetime.now() - timedelta(hours=1)
+    todo = TodoItem("마감이 지난 과제", deadline=past_time)
+    
+    # 수동으로 완료 처리를 안 했어도 자동으로 True가 되어야 함
+    assert todo.is_completed is True
+
+
+def test_not_completed_before_deadline():
+    """정상 케이스 6: 마감 시간이 아직 안 지났다면 False를 유지하는지 확인"""
+    # 현재 시간보다 1시간 뒤로 마감 시간 설정
+    future_time = datetime.now() + timedelta(hours=1)
+    todo = TodoItem("마감이 남은 과제", deadline=future_time)
+    
+    assert todo.is_completed is False
+
+
+# ==========================================
+# 2. 엣지 케이스
+# ==========================================
+
+def test_error_when_title_is_none():
+    """엣지 케이스 1: 제목이 None일 때 ValueError가 발생하는지 확인"""
+    with pytest.raises(ValueError):
+        TodoItem(None)
+
+
+def test_error_when_title_is_empty_string():
+    """엣지 케이스 2: 제목이 빈 문자열("")일 때 ValueError가 발생하는지 확인"""
     with pytest.raises(ValueError):
         TodoItem("")
 
-# 3. 부모 클래스 완료 처리 기능 테스트
-def test_todo_item_mark_completed():
-    item = TodoItem("공부하기")
-    item.mark_as_completed()
-    assert item.is_completed is True
 
-# 4. 하루 일과 클래스 생성 및 속성 테스트
-def test_daily_schedule_creation():
-    schedule = DailySchedule("2026-06-20", "14:00", "프로젝트 회의")
-    assert schedule.date == "2026-06-20"
-    assert schedule.time == "14:00"
-    assert schedule.title == "프로젝트 회의"
-
-# 5. 하루 일과 빈 값 예외 처리 테스트
-def test_daily_schedule_empty_value():
+def test_error_when_title_is_only_spaces():
+    """엣지 케이스 3: 제목이 공백으로만 이루어졌을 때("   ") ValueError가 발생하는지 확인"""
     with pytest.raises(ValueError):
-        DailySchedule("", "14:00", "오류 테스트")
-
-# 6. 하루 일과 요약 문구 포맷 테스트
-def test_daily_schedule_summary():
-    schedule = DailySchedule("2026-06-20", "09:00", "출근")
-    assert schedule.get_summary() == "☐ [2026-06-20 09:00] 출근"
-
-# 7. 하루 일과 시간 정보 반환 테스트
-def test_daily_schedule_time_info():
-    schedule = DailySchedule("2026-06-20", "18:00", "저녁 약속")
-    assert schedule.get_time_info() == "2026-06-20 18:00"
-
-# 8. 체크리스트 클래스 요약 문구 포맷 테스트
-def test_checklist_summary():
-    chk = Checklist("마트 가기")
-    assert chk.get_summary() == "☐ 마트 가기"
-
-# 9. 체크리스트 상태 초기화 테스트
-def test_checklist_reset_status():
-    chk = Checklist("운동하기")
-    chk.mark_as_completed()
-    assert chk.is_completed is True
-    chk.reset_status()
-    assert chk.is_completed is False
+        TodoItem("     ")
