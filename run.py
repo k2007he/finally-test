@@ -22,15 +22,15 @@ def main():
                 print("\n[ 📅 하루 일과 관리 ]")
                 print("1. 하루 일과 추가")
                 print("2. 하루 일과 확인 (시간순 정렬)")
+                print("3. 하루 일과 완료 처리")  # 💡 새로 추가된 메뉴
                 print("0. 메인 메뉴로 돌아가기")
-                sub_choice = input("작업을 선택하세요 (1/2/0): ").strip()
+                sub_choice = input("작업을 선택하세요 (1/2/3/0): ").strip()
 
                 if sub_choice == "0":
-                    break  # 메인 메뉴로 돌아가기
+                    break
 
                 if sub_choice == "1":
                     print("\n--- 📝 하루 일과 추가 (뒤로 가려면 'q' 입력) ---")
-                    
                     date = input("날짜를 입력하세요 (예: 2026-06-20): ").strip()
                     if date.lower() == 'q': 
                         print("↩️ 입력을 취소하고 돌아갑니다.")
@@ -61,6 +61,31 @@ def main():
                         sorted_schedules = sorted(schedules, key=lambda x: (x.date, x.time))
                         for index, item in enumerate(sorted_schedules, 1):
                             print(f"{index}. {item.get_summary()}")
+
+                # 💡 새로 구현된 하루 일과 완료 처리 기능
+                elif sub_choice == "3":
+                    print("\n--- ✔️ 하루 일과 완료 처리 (뒤로 가려면 'q' 입력) ---")
+                    if not schedules:
+                        print("완료 처리할 하루 일과가 없습니다.")
+                        continue
+                    
+                    for index, item in enumerate(schedules, 1):
+                        print(f"{index}. {item.get_summary()}")
+                    
+                    user_input = input("완료할 항목의 번호를 입력하세요: ").strip()
+                    if user_input.lower() == 'q':
+                        print("↩️ 작업을 취소하고 돌아갑니다.")
+                        continue
+                        
+                    try:
+                        num = int(user_input)
+                        if 1 <= num <= len(schedules):
+                            schedules[num - 1].mark_as_completed()
+                            print(f"✅ '{schedules[num - 1].title}' 일과가 완료 처리되었습니다!")
+                        else:
+                            print("❌ 올바른 번호 범위가 아닙니다.")
+                    except ValueError:
+                        print("❌ 숫자 또는 'q'만 입력해 주세요.")
                 else:
                     print("❌ 잘못된 선택입니다. 다시 입력해주세요.")
 
@@ -77,7 +102,7 @@ def main():
                 sub_choice = input("작업을 선택하세요 (1/2/3/0): ").strip()
 
                 if sub_choice == "0":
-                    break  # 메인 메뉴로 돌아가기
+                    break
 
                 if sub_choice == "1":
                     print("\n--- 📝 체크리스트 추가 (뒤로 가려면 'q' 입력) ---")
@@ -128,9 +153,6 @@ def main():
                 else:
                     print("❌ 잘못된 선택입니다. 다시 입력해주세요.")
 
-        # ----------------------------------------------------
-        # q. 프로그램 종료
-        # ----------------------------------------------------
         elif main_choice == "q":
             print("\n👋 프로그램을 종료합니다. 좋은 하루 되세요!")
             break

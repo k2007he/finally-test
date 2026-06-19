@@ -1,42 +1,54 @@
 import pytest
-from media_library import Book, Movie
-from media_library.core import Media
+from media_library import TodoItem, DailySchedule, Checklist
 
-def test_normal_media_summary():
-    media = Media("인셉션", "놀란", 2010)
-    assert media.get_summary() == "인셉션 (놀란, 2010)"
+# 1. 부모 클래스 기본 생성 테스트
+def test_todo_item_creation():
+    item = TodoItem("기본 할 일")
+    assert item.title == "기본 할 일"
+    assert item.is_completed is False
 
-def test_normal_book_archive_score():
-    book = Book("대하소설", "작가", 2020, 600)
-    assert book.calculate_archive_score(2026) == 100
-
-def test_normal_movie_archive_score():
-    movie = Movie("장편영화", "감독", 2016, 130)
-    assert movie.calculate_archive_score(2026) == 95
-
-def test_normal_subclass_type_strings():
-    book = Book("책", "저자", 2022, 200)
-    movie = Movie("영화", "감독", 2024, 110)
-    assert book.get_media_type() == "도서"
-    assert movie.get_media_type() == "영화"
-
-def test_normal_private_method_behavior():
-    media = Media("Test Title", "Author", 2026)
-    assert media._generate_base_id() == "MED-TES-2026"
-
-def test_edge_empty_initialization():
+# 2. 부모 클래스 빈 값 입력시 예외 처리 테스트
+def test_todo_item_empty_title():
     with pytest.raises(ValueError):
-        Media("", "제작자", 2026)
+        TodoItem("")
 
-def test_edge_invalid_future_year():
-    media = Media("미래작품", "감독", 2026)
-    with pytest.raises(ValueError):
-        media.calculate_archive_score(2020)
+# 3. 부모 클래스 완료 처리 기능 테스트
+def test_todo_item_mark_completed():
+    item = TodoItem("공부하기")
+    item.mark_as_completed()
+    assert item.is_completed is True
 
-def test_edge_book_negative_pages():
-    with pytest.raises(ValueError):
-        Book("오류도서", "저자", 2025, 0)
+# 4. 하루 일과 클래스 생성 및 속성 테스트
+def test_daily_schedule_creation():
+    schedule = DailySchedule("2026-06-20", "14:00", "프로젝트 회의")
+    assert schedule.date == "2026-06-20"
+    assert schedule.time == "14:00"
+    assert schedule.title == "프로젝트 회의"
 
-def test_edge_movie_negative_running_time():
+# 5. 하루 일과 빈 값 예외 처리 테스트
+def test_daily_schedule_empty_value():
     with pytest.raises(ValueError):
-        Movie("오류영화", "감독", 2025, -120)
+        DailySchedule("", "14:00", "오류 테스트")
+
+# 6. 하루 일과 요약 문구 포맷 테스트
+def test_daily_schedule_summary():
+    schedule = DailySchedule("2026-06-20", "09:00", "출근")
+    assert schedule.get_summary() == "☐ [2026-06-20 09:00] 출근"
+
+# 7. 하루 일과 시간 정보 반환 테스트
+def test_daily_schedule_time_info():
+    schedule = DailySchedule("2026-06-20", "18:00", "저녁 약속")
+    assert schedule.get_time_info() == "2026-06-20 18:00"
+
+# 8. 체크리스트 클래스 요약 문구 포맷 테스트
+def test_checklist_summary():
+    chk = Checklist("마트 가기")
+    assert chk.get_summary() == "☐ 마트 가기"
+
+# 9. 체크리스트 상태 초기화 테스트
+def test_checklist_reset_status():
+    chk = Checklist("운동하기")
+    chk.mark_as_completed()
+    assert chk.is_completed is True
+    chk.reset_status()
+    assert chk.is_completed is False

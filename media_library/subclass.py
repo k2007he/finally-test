@@ -1,32 +1,41 @@
+from datetime import datetime
 from .core import TodoItem
 
 class DailySchedule(TodoItem):
-    """하루 일과 관리 클래스"""
-    def __init__(self, date: str, time: str, title: str):
+    def __init__(self, date, time, title):
         super().__init__(title)
         if not date or not time:
-            raise ValueError("날짜와 시간은 필수 항목입니다.")
-        self.date = date
-        self.time = time
+            raise ValueError("날짜와 시간은 필수입니다.")
+        self.date = date  # 예: "2026-06-20"
+        self.time = time  # 예: "14:00"
 
-    def get_summary(self) -> str:
-        # 완료 여부에 따라 앞에 표시를 다르게 해줄 수도 있습니다 (현재는 정렬용으로 유지)
+    def get_summary(self):
+        # 💡 현재 컴퓨터 시간과 일과의 예정 시간을 비교합니다.
+        try:
+            current_now = datetime.now()
+            schedule_time = datetime.strptime(f"{self.date} {self.time}", "%Y-%m-%d %H:%M")
+            
+            # 예정 시간이 현재 시간보다 과거라면 자동으로 완료(True) 처리
+            if schedule_time <= current_now:
+                self.is_completed = True
+        except ValueError:
+            # 사용자가 날짜 형식을 잘못 입력했을 때 프로그램이 튕기지 않도록 예외 처리
+            pass
+
         status = "☑" if self.is_completed else "☐"
         return f"{status} [{self.date} {self.time}] {self.title}"
 
-    def get_item_type(self) -> str:
-        return "하루 일과"
+    def get_time_info(self):
+        return f"{self.date} {self.time}"
 
 
 class Checklist(TodoItem):
-    """일정과 무관한 체크리스트 클래스"""
-    def __init__(self, title: str):
+    def __init__(self, title):
         super().__init__(title)
 
-    def get_summary(self) -> str:
-        # 💡 완료되면 ☑, 미완료면 ☐ 기호가 붙습니다.
-        icon = "☑" if self.is_completed else "☐"
-        return f"{icon} {self.title}"
+    def get_summary(self):
+        status = "☑" if self.is_completed else "☐"
+        return f"{status} {self.title}"
 
-    def get_item_type(self) -> str:
-        return "체크리스트"
+    def reset_status(self):
+        self.is_completed = False
