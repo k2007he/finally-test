@@ -1,4 +1,4 @@
-from media_library import DailySchedule, Checklist
+from today_checklist import DailySchedule, Checklist
 
 def main():
     schedules = []

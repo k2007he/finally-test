@@ -1,5 +1,5 @@
 import pytest
-from media_library import TodoItem, DailySchedule, Checklist
+from today_checklist import TodoItem, DailySchedule, Checklist
 
 # 1. 부모 클래스 기본 생성 테스트
 def test_todo_item_creation():
