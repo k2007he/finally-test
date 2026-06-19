@@ -48,10 +48,12 @@ print(schedule.get_summary())
 
 ## 5. 테스트 실행 방법 (Testing)
 단위 테스트 (pytest)
-.\.venv\Scripts\python.exe -m pytest
+- .\.venv\Scripts\python.exe -m pytest
 
 문서화 테스트 (doctest)
-.\.venv\Scripts\python.exe -m doctest today_checklist/core.py
+- .\.venv\Scripts\python.exe -m doctest today_checklist/core.py
+
+![alt text](image.png)
 
 
 
