@@ -4,7 +4,7 @@ def main():
     schedules = []
     checklists = []
 
-    while True:
+    while True:                      #while True: 포로그램을 종료하기 전까지 계속 메뉴를 보여 주기 위해 무한루프를 돌림. '메인메뉴'와 '상세 메뉴' 분리       
         print("\n" + "=" * 40)
         print(" 📅 개인 일정 관리 시스템 📋")
         print("=" * 40)
@@ -22,7 +22,7 @@ def main():
                 print("\n[ 📅 하루 일과 관리 ]")
                 print("1. 하루 일과 추가")
                 print("2. 하루 일과 확인 (시간순 정렬)")
-                print("3. 하루 일과 완료 처리")  # 💡 새로 추가된 메뉴
+                print("3. 하루 일과 완료 처리")  # 새로 추가된 메뉴
                 print("0. 메인 메뉴로 돌아가기")
                 sub_choice = input("작업을 선택하세요 (1/2/3/0): ").strip()
 
@@ -46,12 +46,12 @@ def main():
                         print("↩️ 입력을 취소하고 돌아갑니다.")
                         continue
                     
-                    try:
+                    try
                         new_schedule = DailySchedule(date=date, time=time, title=title)
                         schedules.append(new_schedule)
                         print("✅ 하루 일과가 성공적으로 추가되었습니다!")
                     except ValueError as e:
-                        print(f"❌ 오류: {e}")
+                        print(f"❌ 오류: {e}")    
 
                 elif sub_choice == "2":
                     print("\n--- 👀 하루 일과 확인 (시간순) ---")
@@ -62,7 +62,7 @@ def main():
                         for index, item in enumerate(sorted_schedules, 1):
                             print(f"{index}. {item.get_summary()}")
 
-                # 💡 새로 구현된 하루 일과 완료 처리 기능
+                #  새로 구현된 하루 일과 완료 처리 기능
                 elif sub_choice == "3":
                     print("\n--- ✔️ 하루 일과 완료 처리 (뒤로 가려면 'q' 입력) ---")
                     if not schedules:
@@ -73,8 +73,8 @@ def main():
                         print(f"{index}. {item.get_summary()}")
                     
                     user_input = input("완료할 항목의 번호를 입력하세요: ").strip()
-                    if user_input.lower() == 'q':
-                        print("↩️ 작업을 취소하고 돌아갑니다.")
+                    if user_input.lower() == 'q':           #사용자 입력에서 불필요한 공백을 제거(strip)하고, 대문자를 소문자로 바꿔(lower) 입력값 오류를 줄였습니다.
+                        print("↩️ 작업을 취소하고 돌아갑니다.") 
                         continue
                         
                     try:
@@ -124,7 +124,7 @@ def main():
                         print("등록된 체크리스트가 없습니다.")
                     else:
                         sorted_checklists = sorted(checklists, key=lambda x: not x.is_completed)
-                        for index, item in enumerate(sorted_checklists, 1):
+                        for index, item in enumerate(sorted_checklists, 1):        #enumerate함수를 통해 리스트의 요소뿐만 아니라 번호까지 함께 가져왔습니다.여기서 1을 넣은 이유는 리스트는 0부터 시작하지만,보여줄 떄는 1번부터 시작하도록 하기 위함입니다.
                             print(f"{index}. {item.get_summary()}")
 
                 elif sub_choice == "3":

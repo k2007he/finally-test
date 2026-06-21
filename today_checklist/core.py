@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class Task:
     """모든 할 일 항목의 부모 클래스"""
     def __init__(self, title):
@@ -36,7 +37,6 @@ class TodoItem(Task):
     def is_completed(self):
         """
         수동 완료 여부 또는 마감 시간 경과 여부를 확인한다.
-        
         >>> todo = TodoItem("과제", deadline=datetime(2020, 1, 1))
         >>> todo.is_completed
         True
@@ -50,7 +50,6 @@ class TodoItem(Task):
     def get_summary(self):
         """
         할 일 요약을 반환한다.
-        
         :return: 요약 문자열
         """
         return f"{self._get_status_mark()} {self.title}"
